@@ -31,7 +31,32 @@
 - `index.js` : نقطة البدء الرئيسية
 - `routes/`‎ : تعريف المسارات وEndpoints
 
-## الإعدادات البيئية
-- تحتاج متغيرات بيئة `.env` لربط قاعدة البيانات وإعداد المفاتيح السرية
+## SMTP Configuration (Forgot Password)
+This backend uses SMTP for sending password reset emails. Ensure you have the following environment variables configured for email functionality:
 
----
+- `EMAIL_USER`: The email address used to send password reset emails.
+- `EMAIL_PASS`: The password for the `EMAIL_USER`.
+- `EMAIL_HOST`: The SMTP host (e.g., `smtp.gmail.com`).
+- `EMAIL_PORT`: The SMTP port (e.g., `587` for TLS/STARTTLS).
+
+## الإعدادات البيئية
+- تحتاج متغيرات بيئة `.env` لربط قاعدة البيانات وإعداد المفاتيح السرية.
+- قم بإنشاء ملف `.env` في المجلد الجذر للـ `backend` واملأه بالمعلومات التالية:
+
+```
+# Database Configuration
+DB_USER=your_db_user
+DB_HOST=localhost
+DB_DATABASE=testBackend
+DB_PASSWORD=your_db_password
+DB_PORT=5432
+
+# JWT Secret
+JWT_SECRET=your_jwt_secret_key
+
+# SMTP Configuration for Email
+EMAIL_USER=your_email@example.com
+EMAIL_PASS=your_email_password
+EMAIL_HOST=smtp.example.com
+EMAIL_PORT=587
+```

@@ -207,7 +207,7 @@ export default function AdditionalInfo() {
     } catch (error: unknown) {
       console.error('Full registration error:', error);
       if (axios.isAxiosError(error) && error.response) {
-        setAlert({ message: error.response.data?.message || 'حدث خطأ أثناء التسجيل.', type: 'error' });
+        setAlert({ message: error.response.data?.error || 'حدث خطأ أثناء التسجيل.', type: 'error' });
       } else {
         setAlert({ message: 'حدث خطأ غير متوقع.', type: 'error' });
       }
@@ -351,6 +351,7 @@ export default function AdditionalInfo() {
                     {/* Calendar Header with Navigation */}
                     <div className="flex justify-between items-center mb-4">
                       <button
+                        type="button"
                         onClick={() => navigateMonth('prev')}
                         className="p-2 text-[#00A6C0] hover:bg-[#393E46] rounded-lg transition duration-200"
                       >
@@ -359,6 +360,7 @@ export default function AdditionalInfo() {
                       
                       <div className="flex gap-2">
                         <button
+                          type="button"
                           onClick={() => setShowMonthSelector(!showMonthSelector)}
                           className="px-3 py-1 bg-[#393E46] text-[#D8D7CE] rounded-lg hover:bg-[#00A6C0] hover:text-[#222831] transition duration-200 flex items-center gap-1"
                         >
@@ -367,6 +369,7 @@ export default function AdditionalInfo() {
                         </button>
                         
                         <button
+                          type="button"
                           onClick={() => setShowYearSelector(!showYearSelector)}
                           className="px-3 py-1 bg-[#393E46] text-[#D8D7CE] rounded-lg hover:bg-[#00A6C0] hover:text-[#222831] transition duration-200 flex items-center gap-1"
                         >
@@ -376,6 +379,7 @@ export default function AdditionalInfo() {
                       </div>
                       
                       <button
+                        type="button"
                         onClick={() => navigateMonth('next')}
                         className="p-2 text-[#00A6C0] hover:bg-[#393E46] rounded-lg transition duration-200"
                         disabled={currentYear >= new Date().getFullYear() && currentMonth >= new Date().getMonth()}
@@ -391,6 +395,7 @@ export default function AdditionalInfo() {
                           {generateYears().map(year => (
                             <button
                               key={year}
+                              type="button"
                               onClick={() => selectYear(year)}
                               className={`p-2 rounded text-sm transition duration-200 ${
                                 year === currentYear
@@ -412,6 +417,7 @@ export default function AdditionalInfo() {
                           {arabicMonths.map((month, index) => (
                             <button
                               key={month}
+                              type="button"
                               onClick={() => selectMonth(index)}
                               className={`p-2 rounded text-sm transition duration-200 ${
                                 index === currentMonth

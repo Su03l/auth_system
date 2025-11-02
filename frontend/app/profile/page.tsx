@@ -90,6 +90,15 @@ export default function ProfilePage() {
     'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
   ];
 
+  useEffect(() => {
+    if (alert) {
+      const timer = setTimeout(() => {
+        setAlert(null);
+      }, 2000); // Clear alert after 3 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [alert]);
+
   // إغلاق التقويم عند النقر خارج المنطقة
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -249,7 +258,7 @@ export default function ProfilePage() {
         city: editFormData.city,
         educationalQualification: editFormData.educationalQualification,
         aboutMe: editFormData.bio,
-        dateOfBirth: editFormData.dateOfBirth,
+        dateOfBirth: editFormData.dateOfBirth, // هذا هو التاريخ المحدد فقط
       };
 
       const response = await axios.patch(`${BASE_URL}/users/${userId}`, dataToSend, {
@@ -377,6 +386,7 @@ export default function ProfilePage() {
       }
       return newDate;
     });
+    // لا تقم بإغلاق القوائم الفرعية عند التنقل بين الأشهر
   };
 
   const selectYear = (year: number) => {
@@ -386,6 +396,7 @@ export default function ProfilePage() {
       return newDate;
     });
     setShowYearSelector(false);
+    // لا تقم بتحديث dateOfBirth هنا
   };
 
   const selectMonth = (month: number) => {
@@ -395,6 +406,7 @@ export default function ProfilePage() {
       return newDate;
     });
     setShowMonthSelector(false);
+    // لا تقم بتحديث dateOfBirth هنا
   };
 
   const generateYears = () => {
@@ -747,6 +759,7 @@ export default function ProfilePage() {
                                         setShowCalendar(false);
                                         setShowYearSelector(false);
                                         setShowMonthSelector(false);
+                                        setAlert(null);
                                       }}
                                     >
                                       إغلاق

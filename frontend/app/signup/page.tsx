@@ -1,35 +1,38 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import Button from '@/components/ui/Button';
-import Input from '@/components/ui/Input';
-import Card from '@/components/ui/Card';
-import FadeIn from '@/components/animations/FadeIn';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import EmailIcon from '@mui/icons-material/Email';
-import PhoneIcon from '@mui/icons-material/Phone';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import GoogleIcon from '@mui/icons-material/Google';
-import AppleIcon from '@mui/icons-material/Apple';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import PersonIcon from '@mui/icons-material/Person';
-import axios from 'axios'; // Import axios
+import React, { useState } from "react";
+import Link from "next/link";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+import Card from "@/components/ui/Card";
+import FadeIn from "@/components/animations/FadeIn";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import EmailIcon from "@mui/icons-material/Email";
+import PhoneIcon from "@mui/icons-material/Phone";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import GoogleIcon from "@mui/icons-material/Google";
+import AppleIcon from "@mui/icons-material/Apple";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import PersonIcon from "@mui/icons-material/Person";
+import axios from "axios"; // Import axios
 
-const BASE_URL = 'http://localhost:5000'; // Define your backend base URL
+const BASE_URL = "http://localhost:5000"; // Define your backend base URL
 
 export default function SignUp() {
   const [formData, setFormData] = useState({
-    fname: '',
-    lname: '',
-    username: '',
-    email: '',
-    phone_number: '',
-    password: '',
-    repassword: '',
+    fname: "",
+    lname: "",
+    username: "",
+    email: "",
+    phone_number: "",
+    password: "",
+    repassword: "",
   });
-  const [alert, setAlert] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const [alert, setAlert] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -37,30 +40,93 @@ export default function SignUp() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevent default form submission
-    if (formData.password !== formData.repassword) {
-      setAlert({ message: 'كلمتا المرور غير متطابقتين!', type: 'error' });
+
+    const {
+      fname,
+      lname,
+      username,
+      email,
+      phone_number,
+      password,
+      repassword,
+    } = formData;
+
+    // Validation rules
+    const nameRegex = /^[A-Za-z\u0600-\u06FF\s]+$/; // Allows Arabic and Latin letters and spaces
+    const usernameRegex = /^[a-zA-Z0-9_.-]+$/; // Alphanumeric, _, -, .
+
+    const phoneRegex = /^05[0-9]{8}$/; // Starts with 05, followed by 8 digits
+
+    if (!nameRegex.test(fname)) {
+      setAlert({
+        message: "الاسم الأول يجب أن يحتوي على أحرف فقط.",
+        type: "error",
+      });
+      return;
+    }
+    if (!nameRegex.test(lname)) {
+      setAlert({
+        message: "الاسم الأخير يجب أن يحتوي على أحرف فقط.",
+        type: "error",
+      });
+      return;
+    }
+    if (!usernameRegex.test(username)) {
+      setAlert({
+        message: "اسم المستخدم يمكن أن يحتوي على أحرف، أرقام، _، -، . فقط.",
+        type: "error",
+      });
+      return;
+    }
+
+    if (phone_number && !phoneRegex.test(phone_number)) {
+      setAlert({
+        message: "صيغة رقم الهاتف غير صحيحة. يجب أن يبدأ بـ 05 ويتبعه 8 أرقام.",
+        type: "error",
+      });
+      return;
+    }
+    if (password.length < 4 || password.length > 16) {
+      setAlert({
+        message: "كلمة المرور يجب أن تتكون من 4 إلى 16 حرفًا.",
+        type: "error",
+      });
+      return;
+    }
+    if (password !== repassword) {
+      setAlert({ message: "كلمتا المرور غير متطابقتين!", type: "error" });
       return;
     }
 
     // Store the initial signup data in localStorage
-    localStorage.setItem('signupFormData', JSON.stringify(formData));
+    localStorage.setItem("signupFormData", JSON.stringify(formData));
 
-    setAlert({ message: 'جاري المتابعة إلى معلومات إضافية...', type: 'success' });
+    setAlert({
+      message: "جاري المتابعة إلى معلومات إضافية...",
+      type: "success",
+    });
     setTimeout(() => {
-      window.location.href = '/signup/additionalinfo'; // Redirect to additionalinfo page
-    }, 1000); // Shorter delay for navigation
+      window.location.href = "/signup/additionalinfo"; // Redirect to additionalinfo page
+    }, 1000);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       {alert && (
-        <div className={`fixed top-5 left-1/2 -translate-x-1/2 p-4 rounded-lg shadow-lg text-white z-50 ${alert.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`}>
+        <div
+          className={`fixed top-5 left-1/2 -translate-x-1/2 p-4 rounded-lg shadow-lg text-white z-50 ${
+            alert.type === "success" ? "bg-green-500" : "bg-red-500"
+          }`}
+        >
           {alert.message}
         </div>
       )}
       <FadeIn delay={200}>
         <Card className="w-full max-w-lg p-8 transform transition-transform duration-500 border border-[#00A6C0] rounded-3xl [box-shadow:0_0_30px_rgba(0,166,192,0.6)]">
-          <Link href="/" className="absolute top-6 right-6 text-[#D8D7CE] hover:text-[#00A6C0] transition duration-300 flex items-center group">
+          <Link
+            href="/"
+            className="absolute top-6 right-6 text-[#D8D7CE] hover:text-[#00A6C0] transition duration-300 flex items-center group"
+          >
             <ArrowBackIcon className="ml-2 group-hover:translate-x-1 transition-transform duration-300" />
             <span className="font-semibold">العودة</span>
           </Link>
@@ -70,7 +136,9 @@ export default function SignUp() {
           <p className="text-[#D8D7CE] text-center mb-8 opacity-80 leading-snug">
             أنشئ حسابك لفتح عالم من الإمكانيات والميزات المخصصة.
           </p>
-          <form className="space-y-6" onSubmit={handleSignUp}> {/* Add onSubmit handler here */}
+          <form className="space-y-6" onSubmit={handleSignUp}>
+            {" "}
+            {/* Add onSubmit handler here */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="relative">
                 <Input
@@ -130,6 +198,8 @@ export default function SignUp() {
                 startIcon={<LockOutlinedIcon />}
                 value={formData.password}
                 onChange={handleChange}
+                minLength={4}
+                maxLength={16}
               />
             </div>
             <div className="relative">
@@ -140,6 +210,8 @@ export default function SignUp() {
                 startIcon={<LockOutlinedIcon />}
                 value={formData.repassword}
                 onChange={handleChange}
+                minLength={4}
+                maxLength={16}
               />
             </div>
             <Button
@@ -151,13 +223,18 @@ export default function SignUp() {
           </form>
           <div className="mt-8 text-center text-[#D8D7CE] text-md">
             هل لديك حساب بالفعل؟{" "}
-            <Link href="/signin" className="text-[#00A6C0] hover:underline font-semibold transition duration-300">
+            <Link
+              href="/signin"
+              className="text-[#00A6C0] hover:underline font-semibold transition duration-300"
+            >
               تسجيل الدخول
             </Link>
           </div>
           <div className="relative flex items-center justify-center my-8">
             <div className="grow border-t border-[#D8D7CE] opacity-30"></div>
-            <span className="shrink mx-4 text-[#D8D7CE] opacity-70 font-bold">أو</span>
+            <span className="shrink mx-4 text-[#D8D7CE] opacity-70 font-bold">
+              أو
+            </span>
             <div className="grow border-t border-[#D8D7CE] opacity-30"></div>
           </div>
           <div className="flex flex-col space-y-4">
